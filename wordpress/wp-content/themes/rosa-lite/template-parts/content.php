@@ -26,7 +26,7 @@ if ( ! $has_thumb ) {
 	    if ( ! empty( $image[0] ) ) { ?>
 
 		    <div class="article__featured-image">
-			    <a href="<?php the_permalink(); ?>"><img src="<?php echo esc_url( $image[0] ); ?>" alt="<?php the_title(); ?>"/></a>
+			    <a href="<?php the_permalink(); ?>"><img src="<?php echo esc_url( $image[0] ); ?>" target="_blank" alt="<?php the_title(); ?>"/></a>
 		    </div>
 
 	    <?php }
