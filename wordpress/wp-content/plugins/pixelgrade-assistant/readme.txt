@@ -2,9 +2,9 @@
 Contributors: pixelgrade, vlad.olaru
 Tags: dashboard, support, pixelgrade, starter-content, demo-data, documentation
 Requires at least: 4.9.9
-Tested up to: 5.3.0
+Tested up to: 5.3.2
 Requires PHP: 5.4.0
-Stable tag: 1.3.0
+Stable tag: 1.3.2
 License: GPLv3.0
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -31,7 +31,7 @@ You can chose not to use Pixelgrade Assistant but you will not be able to access
 
 If you identify any errors or have an idea for improving the plugin, please open an [issue](https://github.com/pixelgrade/pixelgrade-assistant/issues?stage=open).
 
-If Github is not your thing but you are passionate about Backstage and want to help us make it better, don't hesitate to [reach us](https://pixelgrade.com/contact/).
+If Github is not your thing but you are passionate about Pixelgrade Assistant and want to help us make it better, don't hesitate to [reach us](https://pixelgrade.com/contact/).
 
 == Credits ==
 
@@ -96,6 +96,14 @@ No. We are not tracking you or your site. We ask your permission to share with u
 6. Site setup wizard
 
 == Changelog ==
+
+= 1.3.2 =
+* Fixes for starter content (demo data) importing process.
+* Minor styling and copy improvements.
+
+= 1.3.1 =
+* Improvements and fixes to the theme update notice.
+* Minor styling and copy improvements.
 
 = 1.3.0 =
 * Better starter content (aka demo data) management.

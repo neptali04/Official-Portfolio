@@ -573,6 +573,9 @@ class PixelgradeAssistant_StarterContent {
 			// Allow others to have a say in it.
 			$post_args = apply_filters( 'pixassist_sce_insert_post_args', $post_args, $post, $demo_key );
 
+			// Since wp_insert_post() at post.php@L3884 does a wp_unslash() on the whole post data, we need to do a wp_slash() to prevent things from breaking.
+			$post_args = wp_slash_strings_only( $post_args );
+
 			$post_id = wp_insert_post( $post_args );
 
 			if ( is_wp_error( $post_id ) || empty( $post_id ) ) {
@@ -711,12 +714,12 @@ class PixelgradeAssistant_StarterContent {
 		foreach ( $response_data['data']['terms'] as $i => $term ) {
 
 			$term_args = array(
-				'description' => $term['description'],
+				'description' => wp_slash( $term['description'] ),
 				'slug'        => $term['slug'],
 			);
 
 			$new_id = wp_insert_term(
-				$term['name'], // the term
+				wp_slash( $term['name'] ), // the term
 				$term['taxonomy'], // the taxonomy
 				$term_args
 			);
@@ -741,9 +744,9 @@ class PixelgradeAssistant_StarterContent {
 							$value = $starter_content[ $demo_key ]['media']['ignored'][ $value ];
 						}
 
-						update_term_meta( $new_id['term_id'], $key, $value );
+						update_term_meta( $new_id['term_id'], wp_slash( $key ), $value );
 					}
-					update_term_meta( $new_id['term_id'], 'imported_with_pixassist', true );
+					update_term_meta( $new_id['term_id'], wp_slash( 'imported_with_pixassist' ), true );
 				}
 			}
 

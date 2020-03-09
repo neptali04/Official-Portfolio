@@ -424,7 +424,7 @@ class PixelgradeAssistant_Admin {
         // Show bubble if we have an update notification.
         $new_theme_version = get_theme_mod( 'pixassist_new_theme_version' );
         $theme_support     = self::get_theme_support();
-        if ( ! empty( $new_theme_version ) && ! empty( $theme_support['theme_version'] ) && version_compare( $theme_support['theme_version'], $new_theme_version, '<' ) ) {
+        if ( ! empty( $new_theme_version['new_version'] ) && ! empty( $theme_support['theme_version'] ) && version_compare( $theme_support['theme_version'], $new_theme_version['new_version'], '<' ) ) {
             $show_bubble = true;
         }
 
@@ -847,6 +847,8 @@ class PixelgradeAssistant_Admin {
             $config['theme_name'] = $wupdates_theme_name;
 	        $config['theme_title'] = $wupdates_theme_name;
         }
+        // We will also remember this since there might be times when we wish to refer to how the theme is actually named in style.css.
+	    $config['stylecss_theme_name'] = $theme->get( 'Name' );
 
         if ( empty( $config['theme_uri'] ) ) {
             $config['theme_uri'] = $theme->get( 'ThemeURI' );
@@ -1054,12 +1056,26 @@ class PixelgradeAssistant_Admin {
         // Let's start gathering data about the theme
         // First get the theme directory name (the theme slug - unique)
         $slug = basename( get_template_directory() );
-        $theme_data['new_version'] = '';
+        $theme_data = array(
+	        'new_version' => '0.0.1',
+	        'package' => '',
+	        'url' => '',
+        );
         // If we have received an update response with a version, save it
-        if ( ! empty( $transient->response[ $slug ]['new_version'] ) ) {
+        if ( ! empty( $transient->response[ $slug ]['new_version'] ) && ! empty( $transient->response[ $slug ]['package'] ) ) {
             $theme_data['new_version'] = $transient->response[ $slug ]['new_version'];
+            $theme_data['package'] = $transient->response[ $slug ]['package'];
+            // Right now, WordPress.org returns a URL to the theme's page. This is not helpful as the user can't find the changelog.
+	        // Maybe when WordPress.org switches to a setup more in line with plugins, this URL could be helpful.
+	        // In the meantime, we will construct a URL straight to the readme.txt file for the latest version, from SVN.
+
+//            if ( ! empty( $transient->response[ $slug ]['url'] ) ) {
+//	            $theme_data['url'] = $transient->response[ $slug ]['url'];
+//            }
+
+	        $theme_data['url'] = 'https://themes.svn.wordpress.org/' . $slug . '/' . $theme_data['new_version'] . '/readme.txt';
         }
-        set_theme_mod( 'pixassist_new_theme_version', $theme_data['new_version'] );
+        set_theme_mod( 'pixassist_new_theme_version', $theme_data );
 
         return $transient;
     }
@@ -1082,6 +1098,7 @@ class PixelgradeAssistant_Admin {
             return $transient;
         }
         $this->get_remote_config();
+
         return $transient;
     }
 
@@ -1100,6 +1117,7 @@ class PixelgradeAssistant_Admin {
         }
         // Check and update the user's license details
         self::update_theme_license_details();
+
         return $transient;
     }
 
@@ -2004,12 +2022,12 @@ class PixelgradeAssistant_Admin {
             $new_theme_version = get_theme_mod( 'pixassist_new_theme_version' );
             $theme_name        = self::get_original_theme_name();
             $theme_support     = self::get_theme_support();
-            if ( ! empty( $new_theme_version ) && ! empty( $theme_name ) && ! empty( $theme_support['theme_version'] ) && true === version_compare( $theme_support['theme_version'], $new_theme_version, '<' ) ) {
+	        if ( ! empty( $new_theme_version['new_version'] ) && ! empty( $theme_name ) && ! empty( $theme_support['theme_version'] ) && true === version_compare( $theme_support['theme_version'], $new_theme_version['new_version'], '<' ) ) {
                 ?>
                 <div class="notice notice-warning is-dismissible">
                     <h3><?php esc_html_e( 'New Theme Update is Available!', 'pixelgrade-assistant' ); ?></h3>
                     <hr>
-                    <p><?php printf( wp_kses_post( __( 'Great news! A new theme update is available for your <strong>%s</strong> theme, version <strong>%s</strong>. To update go to your <a href="%s">Themes Dashboard</a>.', 'pixelgrade-assistant' ) ), esc_html( $theme_name ), esc_html( $new_theme_version ), esc_url( admin_url( 'themes.php' ) ) ); ?></p>
+                    <p><?php printf( wp_kses_post( __( 'Great news! A new theme update is available for your <strong>%s</strong> theme, version <strong>%s</strong>. To update go to your <a href="%s">Theme Dashboard</a>.', 'pixelgrade-assistant' ) ), esc_html( $theme_name ), esc_html( $new_theme_version['new_version'] ), esc_url( admin_url( 'admin.php?page=pixelgrade_assistant' ) ) ); ?></p>
                 </div>
                 <?php
             }
